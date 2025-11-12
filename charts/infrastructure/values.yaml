@@ -1,0 +1,19 @@
+---
+# Infrastructure Services Values
+# This chart manages PostgreSQL, Redis, and RabbitMQ
+
+global:
+  storageClass: managed-premium
+
+postgresql:
+  enabled: true
+  # Values passed to bitnami/postgresql-ha chart
+
+redis:
+  enabled: true
+  # Values passed to bitnami/redis chart
+
+rabbitmq:
+  enabled: true
+  # Values passed to bitnami/rabbitmq chart
+

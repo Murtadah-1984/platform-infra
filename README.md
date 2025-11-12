@@ -195,7 +195,7 @@ For detailed instructions, see [Azure Key Vault Documentation](docs/AZURE_KEYVAU
 ### Microservices
 
 - **Identity**: Authentication and authorization (`identity.platform.local`)
-- **Payment**: Payment processing (`payment.platform.local`)
+- **Payment**: Payment processing (`payment.platform.local`) - [Integration Guide](docs/PAYMENT_INTEGRATION.md)
 - **Notification**: Notifications and alerts (`notification.platform.local`)
 
 ### Infrastructure
@@ -204,8 +204,10 @@ For detailed instructions, see [Azure Key Vault Documentation](docs/AZURE_KEYVAU
 - **RabbitMQ**: 3-node cluster
 - **Redis**: Master + 2 replicas
 - **Kong Gateway**: API Gateway with LoadBalancer
-- **Prometheus Stack**: Monitoring and alerting
+- **Monitoring Stack**: Prometheus + Grafana + Loki + Promtail
 - **ArgoCD**: GitOps deployment
+
+> 📊 **See [Deployment Summary](docs/DEPLOYMENT_SUMMARY.md) for complete component overview**
 
 ## Monitoring
 
@@ -251,7 +253,9 @@ This project is licensed under the MIT License.
 ## Additional Documentation
 
 - [Quick Start Guide](docs/QUICKSTART.md) - Get started in 5 minutes
+- [Deployment Summary](docs/DEPLOYMENT_SUMMARY.md) - Complete component overview and deployment status
 - [Deployment Guide](docs/DEPLOYMENT.md) - Detailed deployment instructions
 - [Architecture Overview](docs/ARCHITECTURE.md) - System architecture and design
+- [Payment Service Integration](docs/PAYMENT_INTEGRATION.md) - Complete Payment microservice integration guide
 - [Terraform Infrastructure](azure/terraform/README.md) - Infrastructure as Code setup
 

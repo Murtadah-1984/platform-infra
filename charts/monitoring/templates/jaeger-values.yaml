@@ -1,0 +1,85 @@
+---
+# Jaeger Configuration for Distributed Tracing
+# Shared Jaeger instance for all microservices in the cluster
+
+# Use all-in-one deployment (simplified, recommended for small to medium clusters)
+provisionDataStore:
+  cassandra: false
+  elasticsearch: false
+
+# All-in-one deployment configuration
+allInOne:
+  enabled: true
+  image:
+    tag: "1.51"
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+  storage:
+    type: badger
+    options:
+      badger:
+        ephemeral: false
+        span-store-ttl: "168h"  # 7 days retention
+        directory: /badger/data
+  persistence:
+    enabled: true
+    storageClass: "{{ .Values.global.storageClass }}"
+    size: 20Gi
+    accessModes:
+      - ReadWriteOnce
+
+# Service configuration
+service:
+  type: ClusterIP
+  annotations: {}
+
+# Query service (UI) - accessible at jaeger-query.monitoring.svc.cluster.local:16686
+query:
+  enabled: true
+  service:
+    type: ClusterIP
+    ports:
+      query:
+        port: 16686
+  ingress:
+    enabled: false  # Access via port-forward or LoadBalancer if needed
+
+# Network policies
+networkPolicy:
+  enabled: true
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: platform
+        - namespaceSelector:
+            matchLabels:
+              name: infrastructure
+      ports:
+        - protocol: UDP
+          port: 6831
+        - protocol: TCP
+          port: 14268
+        - protocol: TCP
+          port: 14250
+        - protocol: TCP
+          port: 9411
+
+# Metrics
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    namespace: monitoring
+
+# Security context
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  fsGroup: 10001
+

@@ -1,0 +1,5 @@
+---
+# RabbitMQ Deployment
+# Uses Bitnami RabbitMQ chart
+# This template is a placeholder - actual deployment handled by helmfile
+

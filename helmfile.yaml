@@ -7,6 +7,10 @@ repositories:
     url: https://charts.bitnami.com/bitnami
   - name: prometheus-community
     url: https://prometheus-community.github.io/helm-charts
+  - name: grafana
+    url: https://grafana.github.io/helm-charts
+  - name: jaegertracing
+    url: https://jaegertracing.github.io/helm-charts
   - name: kong
     url: https://charts.konghq.com
   - name: argo
@@ -43,28 +47,50 @@ releases:
     chart: bitnami/postgresql-ha
     version: 12.5.0
     values:
-      - ./charts/postgres-ha/values.yaml
+      - ./charts/infrastructure/templates/postgresql-values.yaml
 
   - name: rabbitmq
     namespace: infrastructure
     chart: bitnami/rabbitmq
     version: 12.0.0
     values:
-      - ./charts/rabbitmq/values.yaml
+      - ./charts/infrastructure/templates/rabbitmq-values.yaml
 
   - name: redis
     namespace: infrastructure
     chart: bitnami/redis
     version: 19.0.0
     values:
-      - ./charts/redis/values.yaml
+      - ./charts/infrastructure/templates/redis-values.yaml
 
+  # Monitoring Stack
   - name: prometheus-stack
     namespace: monitoring
     chart: prometheus-community/kube-prometheus-stack
     version: 57.0.0
     values:
-      - ./charts/prometheus-stack/values.yaml
+      - ./charts/monitoring/templates/prometheus-values.yaml
+
+  - name: loki
+    namespace: monitoring
+    chart: grafana/loki
+    version: 5.31.0
+    values:
+      - ./charts/monitoring/templates/loki-values.yaml
+
+  - name: promtail
+    namespace: monitoring
+    chart: grafana/promtail
+    version: 6.15.0
+    values:
+      - ./charts/monitoring/templates/promtail-values.yaml
+
+  - name: jaeger
+    namespace: monitoring
+    chart: jaegertracing/jaeger
+    version: 0.99.0
+    values:
+      - ./charts/monitoring/templates/jaeger-values.yaml
 
   - name: kong-gateway
     namespace: gateway
@@ -76,21 +102,21 @@ releases:
   # Microservices
   - name: identity
     namespace: platform
-    chart: ./charts/identity
+    chart: ./charts/services/identity
     values:
-      - ./charts/identity/values.yaml
+      - ./charts/services/identity/values.yaml
 
   - name: payment
     namespace: platform
-    chart: ./charts/payment
+    chart: ./charts/services/payment
     values:
-      - ./charts/payment/values.yaml
+      - ./charts/services/payment/values.yaml
 
   - name: notification
     namespace: platform
-    chart: ./charts/notification
+    chart: ./charts/services/notification
     values:
-      - ./charts/notification/values.yaml
+      - ./charts/services/notification/values.yaml
 
   # ArgoCD
   - name: argocd

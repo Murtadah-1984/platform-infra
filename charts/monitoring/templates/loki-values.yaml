@@ -1,0 +1,122 @@
+---
+# Loki Configuration for Log Aggregation
+loki:
+  auth_enabled: false
+  
+  commonConfig:
+    replication_factor: 1
+  
+  storage:
+    type: filesystem
+    bucketNames:
+      chunks: chunks
+      ruler: ruler
+  
+  persistence:
+    enabled: true
+    storageClass: "{{ .Values.global.storageClass }}"
+    size: 50Gi
+    accessModes:
+      - ReadWriteOnce
+  
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+  
+  service:
+    type: ClusterIP
+    port: 3100
+  
+  gateway:
+    enabled: true
+    replicas: 2
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"
+  
+  compactor:
+    enabled: true
+    replicas: 1
+    persistence:
+      enabled: true
+      storageClass: "{{ .Values.global.storageClass }}"
+      size: 10Gi
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+  
+  distributor:
+    replicas: 2
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+  
+  ingester:
+    replicas: 2
+    persistence:
+      enabled: true
+      storageClass: "{{ .Values.global.storageClass }}"
+      size: 20Gi
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "500m"
+      limits:
+        memory: "1Gi"
+        cpu: "1000m"
+  
+  querier:
+    replicas: 2
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "500m"
+      limits:
+        memory: "1Gi"
+        cpu: "1000m"
+  
+  queryFrontend:
+    replicas: 2
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+  
+  tableManager:
+    enabled: true
+    replicas: 1
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"
+
+monitoring:
+  serviceMonitor:
+    enabled: true
+    namespace: monitoring
+
+networkPolicy:
+  enabled: true
+

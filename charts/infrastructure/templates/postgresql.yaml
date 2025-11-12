@@ -1,0 +1,5 @@
+---
+# PostgreSQL HA Deployment
+# Uses Bitnami PostgreSQL HA chart
+# This template is a placeholder - actual deployment handled by helmfile
+

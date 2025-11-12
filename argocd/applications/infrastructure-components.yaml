@@ -17,6 +17,9 @@ spec:
           - name=rabbitmq
           - name=redis
           - name=prometheus-stack
+          - name=loki
+          - name=promtail
+          - name=jaeger
           - name=kong-gateway
   destination:
     server: https://kubernetes.default.svc

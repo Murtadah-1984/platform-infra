@@ -1,0 +1,5 @@
+---
+# Grafana Deployment
+# Uses prometheus-community/kube-prometheus-stack chart
+# This template is a placeholder - actual deployment handled by helmfile
+

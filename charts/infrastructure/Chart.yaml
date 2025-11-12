@@ -1,0 +1,15 @@
+---
+apiVersion: v2
+name: infrastructure
+description: Infrastructure services (PostgreSQL, Redis, RabbitMQ)
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - infrastructure
+  - postgresql
+  - redis
+  - rabbitmq
+maintainers:
+  - name: Platform Team
+

@@ -1,0 +1,19 @@
+---
+# Monitoring Stack Values
+# This chart manages Prometheus, Grafana, and Loki
+
+global:
+  storageClass: managed-premium
+
+prometheus:
+  enabled: true
+  # Values passed to prometheus-community/kube-prometheus-stack chart
+
+grafana:
+  enabled: true
+  # Values passed to prometheus-community/kube-prometheus-stack chart
+
+loki:
+  enabled: true
+  # Values for Loki stack
+
