@@ -245,6 +245,7 @@ This project is licensed under the MIT License.
 
 ## Additional Documentation
 
+- [Quick Start Guide](docs/QUICKSTART.md) - Get started in 5 minutes
 - [Deployment Guide](docs/DEPLOYMENT.md) - Detailed deployment instructions
 - [Architecture Overview](docs/ARCHITECTURE.md) - System architecture and design
 - [Terraform Infrastructure](azure/terraform/README.md) - Infrastructure as Code setup
