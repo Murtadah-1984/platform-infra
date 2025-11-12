@@ -1,0 +1,102 @@
+---
+# Platform Infrastructure Helmfile
+# Manages all Helm charts for microservice platform on Azure AKS
+
+repositories:
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
+  - name: prometheus-community
+    url: https://prometheus-community.github.io/helm-charts
+  - name: kong
+    url: https://charts.konghq.com
+  - name: argo
+    url: https://argoproj.github.io/argo-helm
+  - name: postgres-operator
+    url: https://opensource.zalando.com/postgres-operator/charts/postgres-operator/
+
+environments:
+  default:
+    values:
+      - environments/default.yaml
+  dev:
+    values:
+      - environments/dev.yaml
+  staging:
+    values:
+      - environments/staging.yaml
+  production:
+    values:
+      - environments/production.yaml
+
+helmDefaults:
+  atomic: true
+  cleanupOnFail: true
+  createNamespace: true
+  wait: true
+  timeout: 10m
+  kubeContext: {{ .Values.kubeContext | default "azure-aks" }}
+
+releases:
+  # Infrastructure Components
+  - name: postgres-ha
+    namespace: infrastructure
+    chart: bitnami/postgresql-ha
+    version: 12.5.0
+    values:
+      - ./charts/postgres-ha/values.yaml
+
+  - name: rabbitmq
+    namespace: infrastructure
+    chart: bitnami/rabbitmq
+    version: 12.0.0
+    values:
+      - ./charts/rabbitmq/values.yaml
+
+  - name: redis
+    namespace: infrastructure
+    chart: bitnami/redis
+    version: 19.0.0
+    values:
+      - ./charts/redis/values.yaml
+
+  - name: prometheus-stack
+    namespace: monitoring
+    chart: prometheus-community/kube-prometheus-stack
+    version: 57.0.0
+    values:
+      - ./charts/prometheus-stack/values.yaml
+
+  - name: kong-gateway
+    namespace: gateway
+    chart: kong/kong
+    version: 2.30.0
+    values:
+      - ./charts/kong-gateway/values.yaml
+
+  # Microservices
+  - name: identity
+    namespace: platform
+    chart: ./charts/identity
+    values:
+      - ./charts/identity/values.yaml
+
+  - name: payment
+    namespace: platform
+    chart: ./charts/payment
+    values:
+      - ./charts/payment/values.yaml
+
+  - name: notification
+    namespace: platform
+    chart: ./charts/notification
+    values:
+      - ./charts/notification/values.yaml
+
+  # ArgoCD
+  - name: argocd
+    namespace: argocd
+    chart: argo/argo-cd
+    version: 7.5.0
+    values:
+      - ./charts/argocd/values.yaml
+

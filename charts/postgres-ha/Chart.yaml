@@ -1,0 +1,14 @@
+---
+apiVersion: v2
+name: postgres-ha
+description: PostgreSQL High Availability cluster for microservices
+type: application
+version: 1.0.0
+appVersion: "15.0"
+keywords:
+  - postgresql
+  - database
+  - ha
+maintainers:
+  - name: Platform Team
+

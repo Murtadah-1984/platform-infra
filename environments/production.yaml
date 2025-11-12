@@ -1,0 +1,15 @@
+---
+# Production environment
+kubeContext: azure-aks-prod
+azure:
+  resourceGroup: platform-rg-prod
+  aksCluster: platform-aks-prod
+  acrName: platformacrprod
+  location: eastus
+
+global:
+  imageRegistry: platformacrprod.azurecr.io
+  storageClass: managed-premium
+  domain: platform.com
+  replicaCount: 3
+

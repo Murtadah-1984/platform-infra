@@ -1,0 +1,4 @@
+---
+# This chart uses Bitnami PostgreSQL HA chart as base
+# Override with custom configurations if needed
+

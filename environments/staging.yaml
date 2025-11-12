@@ -1,0 +1,15 @@
+---
+# Staging environment
+kubeContext: azure-aks-staging
+azure:
+  resourceGroup: platform-rg-staging
+  aksCluster: platform-aks-staging
+  acrName: platformacrstaging
+  location: eastus
+
+global:
+  imageRegistry: platformacrstaging.azurecr.io
+  storageClass: managed-premium
+  domain: staging.platform.local
+  replicaCount: 2
+

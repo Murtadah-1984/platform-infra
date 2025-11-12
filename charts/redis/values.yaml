@@ -1,0 +1,54 @@
+---
+# Redis Configuration
+image:
+  registry: docker.io
+  repository: bitnami/redis
+  tag: "7.2.3-debian-11-r0"
+
+architecture: replication
+auth:
+  enabled: true
+  password: ""
+
+master:
+  persistence:
+    enabled: true
+    storageClass: "{{ .Values.global.storageClass }}"
+    size: 8Gi
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+replica:
+  replicaCount: 2
+  persistence:
+    enabled: true
+    storageClass: "{{ .Values.global.storageClass }}"
+    size: 8Gi
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    namespace: monitoring
+
+networkPolicy:
+  enabled: true
+  allowExternal: false
+
+service:
+  type: ClusterIP
+  ports:
+    redis: 6379
+

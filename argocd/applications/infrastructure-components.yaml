@@ -1,0 +1,30 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: infrastructure-components
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://github.com/Murtadah-1984/platform-infra.git
+      targetRevision: main
+      helmfile:
+        path: helmfile.yaml
+        environment: default
+        selectors:
+          - name=postgres-ha
+          - name=rabbitmq
+          - name=redis
+          - name=prometheus-stack
+          - name=kong-gateway
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: infrastructure
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+

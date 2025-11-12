@@ -1,0 +1,14 @@
+---
+# Default environment values
+kubeContext: azure-aks
+azure:
+  resourceGroup: platform-rg
+  aksCluster: platform-aks
+  acrName: platformacr
+  location: eastus
+
+global:
+  imageRegistry: platformacr.azurecr.io
+  storageClass: managed-premium
+  domain: platform.local
+

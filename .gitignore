@@ -1,0 +1,11 @@
+*.log
+*.tmp
+.helm/
+*.tgz
+secrets/
+*.env
+.DS_Store
+Thumbs.db
+
+# services
+services/

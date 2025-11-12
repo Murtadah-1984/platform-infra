@@ -1,0 +1,28 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: microservices
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://github.com/Murtadah-1984/platform-infra.git
+      targetRevision: main
+      helmfile:
+        path: helmfile.yaml
+        environment: default
+        selectors:
+          - name=identity
+          - name=payment
+          - name=notification
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: platform
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+

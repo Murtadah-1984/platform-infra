@@ -1,0 +1,72 @@
+name: Deploy Platform Infrastructure
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'charts/**'
+      - 'helmfile.yaml'
+      - 'environments/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+
+env:
+  AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+  AKS_CLUSTER: ${{ secrets.AKS_CLUSTER }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --name ${{ env.AKS_CLUSTER }} \
+            --overwrite-existing
+
+      - name: Install Helmfile
+        run: |
+          wget -O helmfile https://github.com/helmfile/helmfile/releases/latest/download/helmfile_linux_amd64
+          chmod +x helmfile
+          sudo mv helmfile /usr/local/bin/
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+
+      - name: Deploy with Helmfile
+        run: |
+          ENV=${{ github.event.inputs.environment || 'dev' }}
+          helmfile -e $ENV sync
+        env:
+          KUBECONFIG: ${{ github.workspace }}/.kube/config
+
+      - name: Verify deployment
+        run: |
+          kubectl get pods -A
+          kubectl get services -A
+

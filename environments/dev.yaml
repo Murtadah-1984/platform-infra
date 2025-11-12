@@ -1,0 +1,15 @@
+---
+# Development environment
+kubeContext: azure-aks-dev
+azure:
+  resourceGroup: platform-rg-dev
+  aksCluster: platform-aks-dev
+  acrName: platformacrdev
+  location: eastus
+
+global:
+  imageRegistry: platformacrdev.azurecr.io
+  storageClass: managed-premium
+  domain: dev.platform.local
+  replicaCount: 1
+

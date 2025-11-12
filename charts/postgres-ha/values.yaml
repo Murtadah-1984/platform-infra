@@ -1,0 +1,70 @@
+---
+# PostgreSQL HA Configuration
+global:
+  postgresql:
+    auth:
+      postgresPassword: ""
+      username: "postgres"
+      password: ""
+      database: "platformdb"
+      replicationUsername: "replicator"
+      replicationPassword: ""
+
+postgresql:
+  image:
+    registry: docker.io
+    repository: bitnami/postgresql
+    tag: "15.5.0-debian-11-r0"
+  
+  architecture: replication
+  auth:
+    enablePostgresUser: true
+    postgresPassword: ""
+    username: "postgres"
+    password: ""
+    database: "platformdb"
+    replicationUsername: "replicator"
+    replicationPassword: ""
+  
+  primary:
+    persistence:
+      enabled: true
+      storageClass: "{{ .Values.global.storageClass }}"
+      size: 20Gi
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+  
+  readReplicas:
+    replicaCount: 2
+    persistence:
+      enabled: true
+      storageClass: "{{ .Values.global.storageClass }}"
+      size: 20Gi
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+  
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      namespace: monitoring
+
+service:
+  type: ClusterIP
+  ports:
+    postgresql: 5432
+
+networkPolicy:
+  enabled: true
+  allowExternal: false
+
