@@ -1,0 +1,84 @@
+---
+# Elasticsearch Configuration
+# Shared search and analytics service accessible to all microservices
+# Using Bitnami Elasticsearch Helm chart
+
+image:
+  registry: docker.io
+  repository: bitnami/elasticsearch
+  tag: "8.11.0-debian-11-r0"
+
+# Cluster configuration
+clusterName: "elasticsearch"
+nodeGroup: "master"
+
+# Replica configuration
+master:
+  replicas: 3
+  persistence:
+    enabled: true
+    storageClass: "{{ .Values.global.storageClass }}"
+    size: 50Gi
+  resources:
+    requests:
+      cpu: "1000m"
+      memory: "2Gi"
+    limits:
+      cpu: "2000m"
+      memory: "4Gi"
+
+# Minimum master nodes for quorum
+minimumMasterNodes: 2
+
+# JVM heap size
+masterJavaOpts: "-Xms1g -Xmx1g"
+
+# Service configuration
+service:
+  type: ClusterIP
+  ports:
+    http: 9200
+    transport: 9300
+
+# Network policy
+networkPolicy:
+  enabled: true
+  allowExternal: true
+
+# Elasticsearch configuration
+extraEnvVars:
+  - name: ELASTICSEARCH_IS_DEDICATED_NODE
+    value: "yes"
+  - name: ELASTICSEARCH_NODE_TYPE
+    value: "master"
+
+# Disable security for internal cluster use
+securityContext:
+  enabled: false
+
+# Metrics for Prometheus
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    namespace: monitoring
+
+# Pod disruption budget
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 2
+
+# Anti-affinity for high availability
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - elasticsearch
+          topologyKey: kubernetes.io/hostname
+

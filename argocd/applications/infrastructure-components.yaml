@@ -16,6 +16,8 @@ spec:
           - name=postgres-ha
           - name=rabbitmq
           - name=redis
+          - name=elasticsearch
+          - name=cert-manager
           - name=prometheus-stack
           - name=loki
           - name=promtail

@@ -11,6 +11,8 @@ Microservice platform deployed on Azure Kubernetes Service (AKS) using GitOps wi
 - **PostgreSQL HA**: Primary database with read replicas
 - **RabbitMQ**: Message queue for async communication
 - **Redis**: Caching and session storage
+- **Elasticsearch**: Distributed search and analytics engine
+- **cert-manager**: Automated TLS certificate management
 - **Kong Gateway**: API Gateway and routing
 - **Prometheus Stack**: Monitoring and alerting
 - **ArgoCD**: GitOps deployment automation
@@ -34,7 +36,9 @@ Internet
   └─ Infrastructure Services
       ├─ PostgreSQL HA
       ├─ RabbitMQ
-      └─ Redis
+      ├─ Redis
+      ├─ Elasticsearch
+      └─ cert-manager
 ```
 
 ## Data Flow
@@ -49,6 +53,8 @@ Internet
 - **Database**: PostgreSQL with 1 primary + 2 replicas
 - **Message Queue**: RabbitMQ 3-node cluster
 - **Cache**: Redis master + 2 replicas
+- **Search**: Elasticsearch 3-node cluster
+- **Certificate Manager**: cert-manager with 2 replicas
 - **Services**: Minimum 2 replicas with HPA
 
 ## Security
@@ -56,6 +62,7 @@ Internet
 - Network policies restrict inter-pod communication
 - Services run as non-root users
 - Secrets stored in Kubernetes Secrets
+- **TLS certificates**: Automated management via cert-manager
 - TLS enabled for all ingress endpoints
 - RBAC configured for service accounts
 

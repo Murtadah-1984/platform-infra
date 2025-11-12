@@ -1,0 +1,108 @@
+---
+# cert-manager Configuration
+# Automated TLS certificate management for Kubernetes
+
+# Install CRDs
+installCRDs: true
+
+# Global configuration
+global:
+  priorityClassName: system-cluster-critical
+
+# Webhook configuration
+webhook:
+  replicaCount: 2
+  timeoutSeconds: 30
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+# Controller configuration
+controller:
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  # Leader election for HA
+  leaderElection:
+    enabled: true
+  # Feature gates
+  featureGates: ""
+
+# CA Injector configuration
+cainjector:
+  enabled: true
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+# Prometheus metrics
+prometheus:
+  enabled: true
+  servicemonitor:
+    enabled: true
+    namespace: monitoring
+
+# Security context
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+
+# Pod security standards
+podSecurityPolicy:
+  enabled: false
+
+# Network policy
+networkPolicy:
+  enabled: true
+
+# Service account
+serviceAccount:
+  create: true
+  annotations: {}
+
+# Affinity for high availability
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - cert-manager
+          topologyKey: kubernetes.io/hostname
+
+# Pod disruption budget
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Startup API check
+startupapicheck:
+  enabled: true
+  timeout: 5m
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+

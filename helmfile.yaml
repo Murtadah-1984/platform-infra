@@ -17,6 +17,8 @@ repositories:
     url: https://argoproj.github.io/argo-helm
   - name: postgres-operator
     url: https://opensource.zalando.com/postgres-operator/charts/postgres-operator/
+  - name: jetstack
+    url: https://charts.jetstack.io
 
 environments:
   default:
@@ -62,6 +64,20 @@ releases:
     version: 19.0.0
     values:
       - ./charts/infrastructure/templates/redis-values.yaml
+
+  - name: elasticsearch
+    namespace: infrastructure
+    chart: bitnami/elasticsearch
+    version: 19.8.0
+    values:
+      - ./charts/infrastructure/templates/elasticsearch-values.yaml
+
+  - name: cert-manager
+    namespace: cert-manager
+    chart: jetstack/cert-manager
+    version: v1.13.3
+    values:
+      - ./charts/infrastructure/templates/cert-manager-values.yaml
 
   # Monitoring Stack
   - name: prometheus-stack
