@@ -100,3 +100,16 @@ releases:
     values:
       - ./charts/argocd/values.yaml
 
+  # Azure Key Vault CSI Driver
+  - name: secrets-store-csi-driver
+    namespace: kube-system
+    chart: https://raw.githubusercontent.com/Azure/secrets-store-csi-driver-provider-azure/master/charts/csi-secrets-store-provider-azure/csi-secrets-store-provider-azure-1.2.0.tgz
+    version: 1.2.0
+    values:
+      - ./charts/azure-keyvault-csi/values.yaml
+    # Install before microservices
+    needs:
+      - infrastructure/postgres-ha
+      - infrastructure/rabbitmq
+      - infrastructure/redis
+

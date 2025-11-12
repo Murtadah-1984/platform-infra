@@ -6,9 +6,33 @@ azure:
   aksCluster: platform-aks
   acrName: platformacr
   location: eastus
+  keyVault:
+    name: platform-kv  # Azure Key Vault name
+    tenantId: ""  # Azure Tenant ID
+    managedIdentityClientId: ""  # Managed Identity Client ID
 
 global:
   imageRegistry: platformacr.azurecr.io
   storageClass: managed-premium
   domain: platform.local
+
+# Azure Key Vault configuration for all services
+# These values are passed to each microservice chart
+identity:
+  azureKeyVault:
+    name: platform-kv
+    tenantId: ""  # Set after running setup-keyvault.sh
+    managedIdentityClientId: ""  # Set after running setup-keyvault.sh
+
+payment:
+  azureKeyVault:
+    name: platform-kv
+    tenantId: ""  # Set after running setup-keyvault.sh
+    managedIdentityClientId: ""  # Set after running setup-keyvault.sh
+
+notification:
+  azureKeyVault:
+    name: platform-kv
+    tenantId: ""  # Set after running setup-keyvault.sh
+    managedIdentityClientId: ""  # Set after running setup-keyvault.sh
 

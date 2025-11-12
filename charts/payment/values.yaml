@@ -47,16 +47,26 @@ env:
     value: "Production"
   - name: ASPNETCORE_URLS
     value: "http://+:8080"
+  # Secrets loaded from Azure Key Vault via CSI driver
   - name: ConnectionStrings__DefaultConnection
     valueFrom:
       secretKeyRef:
-        name: payment-secrets
+        name: {{ include "payment.fullname" . }}-secrets
         key: database-connection
   - name: RabbitMQ__ConnectionString
     valueFrom:
       secretKeyRef:
-        name: payment-secrets
+        name: {{ include "payment.fullname" . }}-secrets
         key: rabbitmq-connection
+
+# Azure Key Vault Configuration
+azureKeyVault:
+  name: ""  # Set in environment-specific values
+  tenantId: ""  # Set in environment-specific values
+  managedIdentityClientId: ""  # Set in environment-specific values
+  secrets:
+    databaseConnection: "Payment-DatabaseConnection"
+    rabbitmqConnection: "Payment-RabbitMQConnection"
 
 livenessProbe:
   httpGet:

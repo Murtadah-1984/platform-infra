@@ -46,18 +46,34 @@ env:
     value: "Production"
   - name: ASPNETCORE_URLS
     value: "http://+:8080"
+  # Secrets loaded from Azure Key Vault via CSI driver
   - name: RabbitMQ__ConnectionString
     valueFrom:
       secretKeyRef:
-        name: notification-secrets
+        name: {{ include "notification.fullname" . }}-secrets
         key: rabbitmq-connection
   - name: Email__SmtpHost
     valueFrom:
       secretKeyRef:
-        name: notification-secrets
+        name: {{ include "notification.fullname" . }}-secrets
         key: smtp-host
+  - name: Email__SmtpPassword
+    valueFrom:
+      secretKeyRef:
+        name: {{ include "notification.fullname" . }}-secrets
+        key: smtp-password
   - name: Email__SmtpPort
     value: "587"
+
+# Azure Key Vault Configuration
+azureKeyVault:
+  name: ""  # Set in environment-specific values
+  tenantId: ""  # Set in environment-specific values
+  managedIdentityClientId: ""  # Set in environment-specific values
+  secrets:
+    rabbitmqConnection: "Notification-RabbitMQConnection"
+    smtpHost: "Notification-SmtpHost"
+    smtpPassword: "Notification-SmtpPassword"
 
 livenessProbe:
   httpGet:

@@ -162,30 +162,33 @@ Update `environments/*.yaml` with:
 - Domain names
 - Resource limits
 
-### Secrets
+### Secrets Management
 
-Create Kubernetes secrets for each service:
+This platform uses **Azure Key Vault** with CSI Secret Store driver instead of Kubernetes Secrets.
+
+#### Setup Azure Key Vault
 
 ```bash
-# Identity service secrets
-kubectl create secret generic identity-secrets \
-  --from-literal=database-connection="Host=postgres-ha;Port=5432;Database=platformdb;Username=postgres;Password=..." \
-  --from-literal=redis-connection="redis:6379" \
-  --from-literal=jwt-secret="your-jwt-secret" \
-  -n platform
-
-# Payment service secrets
-kubectl create secret generic payment-secrets \
-  --from-literal=database-connection="Host=postgres-ha;Port=5432;Database=platformdb;Username=postgres;Password=..." \
-  --from-literal=rabbitmq-connection="amqp://admin:password@rabbitmq:5672" \
-  -n platform
-
-# Notification service secrets
-kubectl create secret generic notification-secrets \
-  --from-literal=rabbitmq-connection="amqp://admin:password@rabbitmq:5672" \
-  --from-literal=smtp-host="smtp.example.com" \
-  -n platform
+# Run automated setup script
+./scripts/setup-keyvault.sh
 ```
+
+This script:
+- Creates Azure Key Vault
+- Enables OIDC issuer on AKS
+- Creates managed identities for each service
+- Grants Key Vault access permissions
+- Creates federated credentials for workload identity
+- Creates sample secrets
+
+#### Update Environment Configuration
+
+After running the setup script, update `environments/*.yaml` with:
+- Key Vault name
+- Tenant ID
+- Managed Identity Client IDs (one per service)
+
+For detailed instructions, see [Azure Key Vault Documentation](docs/AZURE_KEYVAULT.md).
 
 ## Services
 
@@ -220,13 +223,15 @@ GitHub Actions workflow (`.github/workflows/deploy.yml`) provides automated depl
 
 - `scripts/setup-azure.sh` - Setup Azure resources (AKS, ACR)
 - `scripts/install-argocd.sh` - Install ArgoCD on cluster
-- `scripts/create-secrets.sh` - Create Kubernetes secrets for services
+- `scripts/setup-keyvault.sh` - Setup Azure Key Vault with managed identities
 
 ## Security
 
 - All services run as non-root users
 - Network policies restrict inter-pod communication
-- Secrets stored in Kubernetes Secrets (consider Azure Key Vault)
+- **Azure Key Vault** integration via CSI Secret Store driver
+- **Workload Identity** for pod authentication (no service principal secrets)
+- **Automatic secret rotation** via Key Vault policies
 - TLS enabled for all ingress endpoints
 - Security contexts with read-only filesystem
 - RBAC configured for service accounts

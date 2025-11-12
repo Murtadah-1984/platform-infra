@@ -1,0 +1,24 @@
+---
+# Azure Key Vault CSI Driver Configuration
+linux:
+  enabled: true
+  driver:
+    image:
+      repository: mcr.microsoft.com/oss/kubernetes-csi/secrets-store/driver
+      tag: "v1.3.2"
+  providers:
+    azure:
+      enabled: true
+      image:
+        repository: mcr.microsoft.com/oss/azure/secrets-store/provider-azure
+        tag: "1.2.0"
+      secretRotationEnabled: true
+      secretRotationInterval: "2m"
+      enableSecretRotation: true
+
+windows:
+  enabled: false
+
+syncSecret:
+  enabled: true
+
