@@ -1,0 +1,24 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: identity-api-role
+  namespace: platform
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "secrets"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: identity-api-rolebinding
+  namespace: platform
+subjects:
+  - kind: ServiceAccount
+    name: identity-api-sa
+    namespace: platform
+roleRef:
+  kind: Role
+  name: identity-api-role
+  apiGroup: rbac.authorization.k8s.io
+

@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: identity-ingress
+  namespace: platform
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    konghq.com/plugins: "rate-limiting,oauth2"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - identity.platform.com
+      secretName: identity-tls
+  rules:
+    - host: identity.platform.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: identity-service
+                port:
+                  number: 80
+

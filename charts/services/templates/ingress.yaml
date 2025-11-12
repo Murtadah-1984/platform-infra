@@ -1,0 +1,5 @@
+---
+# Global Ingress Configuration
+# Individual service ingresses are defined in their respective charts
+# This template is a placeholder for global ingress rules if needed
+

@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  identity-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=identitydb;Username=postgres;Password=postgres
+      - ConnectionStrings__Redis=redis:6379
+      - Jwt__SecretKey=YourSuperSecretKeyThatShouldBeAtLeast32CharactersLong!
+      - Jwt__Issuer=identity-service
+      - Jwt__Audience=platform-services
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - identity-network
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=identitydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - identity-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - identity-network
+
+volumes:
+  postgres-data:
+
+networks:
+  identity-network:
+    driver: bridge
+

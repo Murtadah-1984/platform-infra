@@ -1,0 +1,28 @@
+---
+# Microservices Values
+# This chart manages Identity, Payment, and Notification services
+
+global:
+  imageRegistry: ""
+  storageClass: managed-premium
+  domain: ""
+
+identity:
+  enabled: true
+  # Values for identity service
+
+payment:
+  enabled: true
+  # Values for payment service
+
+notification:
+  enabled: true
+  # Values for notification service
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations: {}
+  hosts: []
+  tls: []
+
